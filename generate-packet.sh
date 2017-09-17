@@ -13,7 +13,7 @@ if [ -z "${1:-}" ]; then
 fi
 file="$1"
 
-if [ -f "BASELINE_STORE/$1" ]; then
+if [ -f "BASELINE_STORE/$file" ]; then
   # Delta method
   delta_file="$(mktemp)"
   xdelta -e -s "$BASELINE_STORE/$file" "$file" "$delta_file"
