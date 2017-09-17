@@ -14,20 +14,27 @@ fi
 while read file_size; do
   if [ "$file_size" == "end" ]; then
     exit 0
+  elif [[ ! "$file_size" =~ [0-9]+ ]]; then
+    echo "Received invalid size: $file_size" >/dev/stderr
+    exit 1
   fi
+  echo "Received packet with size $file_size" >/dev/stderr
 
   read file
   read method
 
-  mkdir -p "$(dirname "$file")"
+  echo "Receiving $file with method $method" >/dev/stderr
+  echo "Creating folder $(dirname "$DEST_STORE/$file")" >/dev/stderr
+  mkdir -p "$(dirname "$DEST_STORE/$file")"
 
   case "$method" in
   "cat")
-    dd of="$DEST_STORE/$file" count="$file_size" iflag=count_bytes
+    head -c "$file_size" > "$DEST_STORE/$file"
+    echo "Received $DEST_STORE/$file"
     ;;
   "delta")
-    xdelta -d -s "$BASELINE_STORE/$file" \
-      <(dd count="$file_size" iflag=count_bytes) \
+    xdelta -d -f -s "$BASELINE_STORE/$file" \
+      <(head -c "$file_size") \
       "$DEST_STORE/$file"
     ;;
   *)

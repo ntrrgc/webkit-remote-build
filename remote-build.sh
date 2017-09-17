@@ -47,13 +47,11 @@ elif [ "$1" == "build" ]; then
   rsync /tmp/local-changes.patch "$BUILD_HOST":/tmp/
 
   # Start receiver
-  ssh -T "$BUILD_HOST" <<END | env BASELINE_STORE="$STORE/baseline" DEST_STORE="/webkit/$LOCAL_BUILD_DIR" "$DIR/packet-receiver.sh" &
-rm -f /tmp/delta-socket
-~/Dropbox/obj-compress/listen-socket.py /tmp/delta-socket
-END
+  #TODO
 
   ssh -T "$BUILD_HOST" <<END
 set -eu
+set -o xtrace
 cd /webkit
 
 # Fetch new commits if necessary
@@ -68,9 +66,11 @@ git checkout -- . >/dev/null
 # Put the source tree in the same state as the client
 git checkout "$commit_hash"
 patch -p1 < /tmp/local-changes.patch
-CXX=~/Dropbox/obj-compress/pseudo-cc.sh \
-  BASELINE_STORE="$STORE/baseline" \
-  ./Tools/Scripts/build-webkit ${BUILD_ARGS[@]}
+env \
+  CXX=~/Dropbox/obj-compress/pseudo-cc.sh \
+  BASELINE_STORE="$STORE/baseline/$REMOTE_BUILD_DIR" \
+  PYTHONUNBUFFERED=1 \
+  ./Tools/Scripts/build-webkit ${BUILD_ARGS[@]} -j1 2>&1 |tee /tmp/out
 
 echo end | ncat -U /tmp/delta-socket
 END

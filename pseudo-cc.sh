@@ -18,33 +18,32 @@ for arg in "$@"; do
   fi
 done
 
-# Crash if the -o argument could not be found
-echo "File: $output_file" >/dev/null
-
-g++ "$@"
+g++ "$@" && true
 exit_status=$?
 
-if [ $exit_status -eq 0 ]; then
+if [ $exit_status -eq 0 ] && [[ "${output_file:-}" =~ \.o$ ]]; then
   socket=/tmp/delta-socket
   while [ ! -S "$socket" ]; do
     echo "$socket does not exist yet... Waiting"
     sleep 1s
   done
 
-  tmp=$(mktemp)
-
   # Compress and send .o file package
+  tmp="$(mktemp)"
   "$DIR/generate-packet.sh" "$output_file" > "$tmp"
+  echo "Generated .o patch" >>/tmp/log
   ncat -U "$socket" < "$tmp"
+  rm "$tmp"
 
   # Compress and send .dwo file package, if it exists
   if [ -f "${output_file%.*}.dwo" ]; then
+    tmp="$(mktemp)"
+    echo "Generating .dwo patch: $file" >>/tmp/log
     "$DIR/generate-packet.sh" "${output_file%.*}.dwo" > "$tmp"
+    echo "Generated .dwo patch" >>/tmp/log
     ncat -U "$socket" < "$tmp"
+    rm "$tmp"
   fi
-
-  # Cleanup
-  rm "$tmp"
 fi
 
 exit $exit_status

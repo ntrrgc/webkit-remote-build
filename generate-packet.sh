@@ -13,10 +13,11 @@ if [ -z "${1:-}" ]; then
 fi
 file="$1"
 
-if [ -f "BASELINE_STORE/$file" ]; then
+if [ -f "$BASELINE_STORE/$file" ]; then
   # Delta method
   delta_file="$(mktemp)"
-  xdelta -e -s "$BASELINE_STORE/$file" "$file" "$delta_file"
+  echo "Generating delta of $file in $delta_file" >> /tmp/log
+  xdelta -e -f -s "$BASELINE_STORE/$file" "$file" "$delta_file"
   file_size=$(stat --printf="%s" "$delta_file")
 
   # Print the package to stdout
@@ -29,8 +30,9 @@ if [ -f "BASELINE_STORE/$file" ]; then
   rm "$delta_file"
 else
   # cat method (entire file)
-  echo "Warning: File not found, using cat method: $file" >/dev/stderr
+  echo "Warning: File not found, using cat method: $BASELINE_STORE/$file" >> /tmp/log
   file_size=$(stat --printf="%s" "$file")
+  echo "File size $file_size" >> /tmp/log
 
   # Print the package to stdout
   echo $file_size
