@@ -3,7 +3,7 @@ set -eu
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 STORE="$HOME/.webkit-remote"
-BUILD_HOST=homura.local
+BUILD_HOST=homura.ntrrgc.me
 BUILD_ARGS=(--gtk --debug)
 REMOTE_BUILD_DIR=WebKitBuild/Debug
 LOCAL_BUILD_DIR=WebKitBuild/Debug
