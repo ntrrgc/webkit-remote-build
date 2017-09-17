@@ -26,6 +26,7 @@ if __name__ == '__main__':
             while True:
                 block = ss.recv(2048)
                 if len(block) == 0:
+                    ss.close()
                     break
 
                 sys.stdout.write(block)
