@@ -24,23 +24,25 @@ echo "File: $output_file" >/dev/null
 g++ "$@"
 exit_status=$?
 
-socket=/tmp/delta-socket
-while [ ! -S "$socket" ]; do
-  echo "$socket does not exist yet... Waiting"
-  sleep 1s
-done
+if [ $exit_status -eq 0 ]; then
+  socket=/tmp/delta-socket
+  while [ ! -S "$socket" ]; do
+    echo "$socket does not exist yet... Waiting"
+    sleep 1s
+  done
 
-tmp=$(mktemp)
+  tmp=$(mktemp)
 
-# Compress and send .o file package
-"$DIR/generate-packet.sh" "$output_file" > "$tmp"
-ncat -U "$socket" < "$tmp"
+  # Compress and send .o file package
+  "$DIR/generate-packet.sh" "$output_file" > "$tmp"
+  ncat -U "$socket" < "$tmp"
 
-# Compress and send .swo file package
-"$DIR/generate-packet.sh" "${output_file%.*}.swo" > "$tmp"
-ncat -U "$socket" < "$tmp"
+  # Compress and send .swo file package
+  "$DIR/generate-packet.sh" "${output_file%.*}.swo" > "$tmp"
+  ncat -U "$socket" < "$tmp"
 
-# Cleanup
-rm "$tmp"
+  # Cleanup
+  rm "$tmp"
+fi
 
 exit $exit_status
