@@ -37,9 +37,11 @@ if [ $exit_status -eq 0 ]; then
   "$DIR/generate-packet.sh" "$output_file" > "$tmp"
   ncat -U "$socket" < "$tmp"
 
-  # Compress and send .swo file package
-  "$DIR/generate-packet.sh" "${output_file%.*}.swo" > "$tmp"
-  ncat -U "$socket" < "$tmp"
+  # Compress and send .dwo file package, if it exists
+  if [ -f "${output_file%.*}.dwo" ]; then
+    "$DIR/generate-packet.sh" "${output_file%.*}.dwo" > "$tmp"
+    ncat -U "$socket" < "$tmp"
+  fi
 
   # Cleanup
   rm "$tmp"
