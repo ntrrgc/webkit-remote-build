@@ -1,11 +1,9 @@
 #!/bin/bash
 set -eu
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-if [ -z "${BASELINE_STORE:-}" ]; then
-  echo "BASELINE_STORE environment variable missing."
-  exit 1
-fi
+DIR="$(dirname $(realpath "$0"))"
+. "$DIR/config.sh"
+BASELINE_STORE="$STORE/baseline/$REMOTE_BUILD_DIR"
 
 if [ -z "${1:-}" ]; then
   echo "Missing file parameter"
