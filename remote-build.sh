@@ -76,8 +76,6 @@ env \
   CC=${REMOTE_SCRIPTS_DIR@Q}/wrappers/cc \
   CXX=${REMOTE_SCRIPTS_DIR@Q}/wrappers/c++ \
   LD=${REMOTE_SCRIPTS_DIR@Q}/wrappers/ld \
-  BASELINE_STORE="${STORE@Q}/baseline/${REMOTE_BUILD_DIR@Q}" \
-  PYTHONUNBUFFERED=1 \
   ./Tools/Scripts/build-webkit ${BUILD_ARGS[@]@Q} 2>&1 |tee /tmp/out
 
 echo end | ncat -U /tmp/delta-socket
