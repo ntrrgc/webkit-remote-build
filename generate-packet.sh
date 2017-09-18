@@ -12,6 +12,12 @@ fi
 file="$1"
 
 if [ -f "$BASELINE_STORE/$file" ]; then
+  method=delta
+else
+  method=xz
+fi
+
+if [ "$method" == "delta" ]; then
   # Delta method
   delta_file="$(mktemp)"
   echo "Generating delta of $file in $delta_file" >>/tmp/generate-packet.log
