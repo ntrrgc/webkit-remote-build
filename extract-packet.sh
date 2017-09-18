@@ -29,8 +29,8 @@ echo "Creating folder $(dirname "$DEST_STORE/$file")" >/dev/stderr
 mkdir -p "$(dirname "$DEST_STORE/$file")"
 
 case "$method" in
-"cat")
-  head -c "$file_size" > "$DEST_STORE/$file"
+"xz")
+  head -c "$file_size" | xz -d -c > "$DEST_STORE/$file"
   echo "Received $DEST_STORE/$file"
   ;;
 "delta")

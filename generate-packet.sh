@@ -29,14 +29,19 @@ if [ -f "$BASELINE_STORE/$file" ]; then
   # Cleanup
   rm "$delta_file"
 else
-  # cat method (entire file)
-  echo "Warning: File not found, using cat method: $BASELINE_STORE/$file" >> /tmp/log
-  file_size=$(stat --printf="%s" "$file")
+  # xz method (entire file)
+  echo "Warning: File not found, using xz method: $file" >> /tmp/log
+  compressed_file="$(mktemp)"
+  xz -z -5 -k "$file" -c > "$compressed_file"
+  file_size=$(stat --printf="%s" "$compressed_file")
   echo "File size $file_size" >> /tmp/log
 
   # Print the package to stdout
   echo $file_size
   echo "$file"
-  echo "cat"
-  cat "$file"
+  echo "xz"
+  cat "$compressed_file"
+
+  # Cleanup
+  rm "$compressed_file"
 fi
