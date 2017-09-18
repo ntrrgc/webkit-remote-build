@@ -77,7 +77,9 @@ env \
   CC=${REMOTE_SCRIPTS_DIR@Q}/wrappers/cc \
   CXX=${REMOTE_SCRIPTS_DIR@Q}/wrappers/c++ \
   LD=${REMOTE_SCRIPTS_DIR@Q}/wrappers/ld \
-  ./Tools/Scripts/build-webkit ${BUILD_ARGS[@]@Q} 2>&1 |tee /tmp/out
+  ./Tools/Scripts/build-webkit ${BUILD_ARGS[@]@Q} \
+  | tee /tmp/build-webkit.log \
+  | ${REMOTE_SCRIPTS_DIR@Q}/print-ninja-progress.py
 
 echo end | ncat -U /tmp/delta-socket
 END
