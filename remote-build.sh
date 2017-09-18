@@ -81,13 +81,13 @@ env \
   ./Tools/Scripts/build-webkit ${BUILD_ARGS[@]@Q} \
   | tee /tmp/build-webkit.log \
   | ${REMOTE_SCRIPTS_DIR@Q}/print-ninja-progress.py
-
 ret_webkit_build="\${PIPESTATUS[0]}"
+
+echo end | ncat -U /tmp/delta-socket
+
 if [ \$ret_webkit_build -ne 0 ]; then
   exit \$ret_webkit_build
 fi
-
-echo end | ncat -U /tmp/delta-socket
 END
 
   wait # wait for all packages to be extracted
