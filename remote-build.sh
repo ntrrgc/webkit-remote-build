@@ -54,7 +54,7 @@ elif [ "$1" == "build" ]; then
   rsync /tmp/local-changes.patch "$BUILD_HOST":/tmp/
 
   # Start receiver
-  if ! DO_NOT_LAUNCH_PACKET_RECEIVER_IN_REMOTE_BUILD; then
+  if ! $DO_NOT_LAUNCH_PACKET_RECEIVER_IN_REMOTE_BUILD; then
     "$DIR/packet-receiver.sh" &
   fi
 
