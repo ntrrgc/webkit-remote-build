@@ -82,6 +82,11 @@ env \
   | tee /tmp/build-webkit.log \
   | ${REMOTE_SCRIPTS_DIR@Q}/print-ninja-progress.py
 
+ret_webkit_build="\${PIPESTATUS[0]}"
+if [ \$ret_webkit_build -ne 0 ]; then
+  exit \$ret_webkit_build
+fi
+
 echo end | ncat -U /tmp/delta-socket
 END
 
