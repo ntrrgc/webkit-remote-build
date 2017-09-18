@@ -54,15 +54,9 @@ elif [ "$1" == "build" ]; then
   rsync /tmp/local-changes.patch "$BUILD_HOST":/tmp/
 
   # Start receiver
-  local_cores="$(getconf _NPROCESSORS_ONLN)"
-  ssh -T "$BUILD_HOST" \
-    | "$DIR/packet-splitter.sh" \
-    | xargs -P$local_cores -d"\n" -n1 ./extract-packet.sh \
-    & <<END
-set -eu
-rm -f /tmp/delta-socket
-${REMOTE_SCRIPTS_DIR@Q}/listen-socket.py /tmp/delta-socket | mbuffer -m 200M -q
-END
+  if ! DO_NOT_LAUNCH_PACKET_RECEIVER_IN_REMOTE_BUILD; then
+    "$DIR/packet-receiver.sh" &
+  fi
 
   ssh -T "$BUILD_HOST" <<END
 set -eu
