@@ -6,7 +6,7 @@ DIR="$(dirname $(realpath "$0"))"
 BASELINE_STORE="$STORE/baseline/$REMOTE_BUILD_DIR"
 
 if [ -z "${1:-}" ]; then
-  echo "Missing file parameter"
+  echo "Missing file parameter" >/dev/stderr
   exit 1
 fi
 file="$1"
