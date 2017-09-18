@@ -5,11 +5,6 @@ wrapped_executable="$(basename "$0")"
 
 echo "Wrapper invoked: $wrapped_executable $@" >>/tmp/cc-wrapper.log
 
-if [ -z "${BASELINE_STORE:-}" ]; then
-  echo "BASELINE_STORE environment variable missing."
-  exit 1
-fi
-
 found_o=0
 
 for arg in "$@"; do
