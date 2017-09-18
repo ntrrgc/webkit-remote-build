@@ -17,19 +17,16 @@ elif [[ ! "$file_size" =~ [0-9]+ ]]; then
   echo "Received invalid size: $file_size" >/dev/stderr
   exit 1
 fi
-echo "Received packet with size $file_size" >/dev/stderr
 
 read file <&3
 read method <&3
 
-echo "Receiving $file with method $method" >/dev/stderr
-echo "Creating folder $(dirname "$DEST_STORE/$file")" >/dev/stderr
+echo "Receiving $file with method $method ($file_size bytes)" >>/tmp/extract-packet.log
 mkdir -p "$(dirname "$DEST_STORE/$file")"
 
 case "$method" in
 "xz")
   head -c "$file_size" <&3 | xz -d -c > "$DEST_STORE/$file"
-  echo "Received $DEST_STORE/$file"
   ;;
 "delta")
   xdelta -d -f -s "$BASELINE_STORE/$file" \
