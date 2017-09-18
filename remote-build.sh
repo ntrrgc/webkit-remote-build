@@ -1,7 +1,8 @@
 #!/bin/bash
 set -eu
 
-. ./config.sh
+DIR="$(dirname $(realpath "$0"))"
+. "$DIR/config.sh"
 
 if [ "$1" == "sync" ]; then
   # Generate a base snapshot of the chubby files in the build host and download

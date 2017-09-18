@@ -1,6 +1,8 @@
 #!/bin/bash
 set -eu
-. ./config.sh
+
+DIR="$(dirname $(realpath "$0"))"
+. "$DIR/config.sh"
 
 ssh -T "$BUILD_HOST" <<END 
 rm -f /tmp/delta-socket

@@ -1,7 +1,9 @@
 #!/bin/bash
 set -eu
 
-. ./config.sh
+DIR="$(dirname $(realpath "$0"))"
+. "$DIR/config.sh"
+
 BASELINE_STORE="$STORE/baseline/$LOCAL_BUILD_DIR"
 DEST_STORE="/webkit/$LOCAL_BUILD_DIR"
 

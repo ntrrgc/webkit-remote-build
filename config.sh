@@ -4,5 +4,3 @@ BUILD_ARGS=(--gtk --debug --cmakeconfig="-DENABLE_GTK_DOC=OFF")
 REMOTE_BUILD_DIR=WebKitBuild/webm/Debug
 LOCAL_BUILD_DIR=WebKitBuild/webm/Debug
 REMOTE_SCRIPTS_DIR=/home/ntrrgc/Dropbox/obj-compress
-
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
