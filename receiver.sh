@@ -1,10 +1,6 @@
-
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-STORE="$HOME/.webkit-remote"
-BUILD_HOST=homura.ntrrgc.me
-BUILD_ARGS=(--gtk --debug)
-REMOTE_BUILD_DIR=WebKitBuild/Debug
-LOCAL_BUILD_DIR=WebKitBuild/Debug
+#!/bin/bash
+set -eu
+. ./config.sh
 
 ssh -T "$BUILD_HOST" <<END 
 rm -f /tmp/delta-socket

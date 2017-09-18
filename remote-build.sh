@@ -1,12 +1,7 @@
 #!/bin/bash
 set -eu
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-STORE="$HOME/.webkit-remote"
-BUILD_HOST=homura.ntrrgc.me
-BUILD_ARGS=(--gtk --debug)
-REMOTE_BUILD_DIR=WebKitBuild/Debug
-LOCAL_BUILD_DIR=WebKitBuild/Debug
+. ./config.sh
 
 if [ "$1" == "sync" ]; then
   # Generate a base snapshot of the chubby files in the build host and download
