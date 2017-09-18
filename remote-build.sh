@@ -73,7 +73,9 @@ git checkout -- . >/dev/null
 git checkout "$($in_branch && echo $branch_name || echo $commit_hash)"
 patch -p1 < /tmp/local-changes.patch
 env \
-  CXX=~/Dropbox/obj-compress/pseudo-cc.sh \
+  CC=$REMOTE_SCRIPTS_DIR/wrappers/cc \
+  CXX=$REMOTE_SCRIPTS_DIR/wrappers/c++ \
+  LD=$REMOTE_SCRIPTS_DIR/wrappers/ld \
   BASELINE_STORE="$STORE/baseline/$REMOTE_BUILD_DIR" \
   PYTHONUNBUFFERED=1 \
   ./Tools/Scripts/build-webkit ${BUILD_ARGS[@]} -j1 2>&1 |tee /tmp/out

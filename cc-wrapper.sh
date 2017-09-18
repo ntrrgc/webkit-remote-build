@@ -1,6 +1,9 @@
 #!/bin/bash
 set -eu
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+DIR="$(dirname $(realpath "$0"))"
+wrapped_executable="$(basename "$0")"
+
+echo "$wrapped_executable $@" >>/tmp/log
 
 if [ -z "${BASELINE_STORE:-}" ]; then
   echo "BASELINE_STORE environment variable missing."
@@ -18,7 +21,7 @@ for arg in "$@"; do
   fi
 done
 
-g++ "$@" && true
+"$wrapped_executable" "$@" && true
 exit_status=$?
 
 if [ $exit_status -eq 0 ] && [[ "${output_file:-}" =~ \.o$ ]]; then
