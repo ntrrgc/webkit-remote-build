@@ -37,6 +37,17 @@ END
 elif [ "$1" == "build" ]; then
   cd /webkit
   commit_hash="$(git show --format="%h" --no-patch)"
+  if git status --branch --porcelain=v2 | egrep -q '^# branch.head \(detached\)$'; then
+    in_branch=false
+  else
+    in_branch=true
+    branch_name="$(git status --branch --porcelain=v2 | egrep '^# branch.head '| cut -d" " -f3)"
+    if ! git status --branch --porcelain=v2 | egrep -q '^# branch.ab \+0 -0$'; then
+      echo "Branch not synchronized with remote. You need to push or pull commits." >/dev/stderr
+      git status --branch
+      exit 1
+    fi
+  fi
   git diff --cached > /tmp/local-changes.patch
 
   rsync /tmp/local-changes.patch "$BUILD_HOST":/tmp/
@@ -59,7 +70,7 @@ git clean -fd
 git checkout -- . >/dev/null
 
 # Put the source tree in the same state as the client
-git checkout "$commit_hash"
+git checkout "$($in_branch && echo $branch_name || echo $commit_hash)"
 patch -p1 < /tmp/local-changes.patch
 env \
   CXX=~/Dropbox/obj-compress/pseudo-cc.sh \
