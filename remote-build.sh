@@ -60,7 +60,6 @@ elif [ "$1" == "build" ]; then
 
   ssh -T "$BUILD_HOST" <<END
 set -eu
-set -o xtrace
 cd /webkit
 
 # Fetch new commits if necessary
