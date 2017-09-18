@@ -24,7 +24,7 @@ elif [ "$1" == "check" ]; then
   # not be applied correctly.
   (cd "/webkit-remote-baseline/$LOCAL_BUILD_DIR" && md5sum "${CHUBBY_FILES[@]}" > /tmp/baseline-local.txt)
   ssh -T "$BUILD_HOST" <<END > /tmp/baseline-remote.txt
-cd "/webkit-remote-baseline/$REMOTE_BUILD_DIR" && md5sum ${CHUBBY_FILES[@]}
+cd "/webkit-remote-baseline/${REMOTE_BUILD_DIR@Q}" && md5sum ${CHUBBY_FILES[@]@Q}
 END
   diff -u /tmp/baseline-{local,remote}.txt
   if [ $? -eq 0 ]; then
@@ -61,7 +61,7 @@ set -o xtrace
 cd /webkit
 
 # Fetch new commits if necessary
-if ! git show "$commit_hash" >/dev/null 2>/dev/null; then
+if ! git show ${commit_hash@Q} >/dev/null 2>/dev/null; then
   git fetch --all
 fi
 
@@ -73,12 +73,12 @@ git checkout -- . >/dev/null
 git checkout "$($in_branch && echo $branch_name || echo $commit_hash)"
 patch -p1 < /tmp/local-changes.patch
 env \
-  CC=$REMOTE_SCRIPTS_DIR/wrappers/cc \
-  CXX=$REMOTE_SCRIPTS_DIR/wrappers/c++ \
-  LD=$REMOTE_SCRIPTS_DIR/wrappers/ld \
-  BASELINE_STORE="$STORE/baseline/$REMOTE_BUILD_DIR" \
+  CC=${REMOTE_SCRIPTS_DIR@Q}/wrappers/cc \
+  CXX=${REMOTE_SCRIPTS_DIR@Q}/wrappers/c++ \
+  LD=${REMOTE_SCRIPTS_DIR@Q}/wrappers/ld \
+  BASELINE_STORE="${STORE@Q}/baseline/${REMOTE_BUILD_DIR@Q}" \
   PYTHONUNBUFFERED=1 \
-  ./Tools/Scripts/build-webkit ${BUILD_ARGS[@]} -j1 2>&1 |tee /tmp/out
+  ./Tools/Scripts/build-webkit ${BUILD_ARGS[@]@Q} 2>&1 |tee /tmp/out
 
 echo end | ncat -U /tmp/delta-socket
 END
