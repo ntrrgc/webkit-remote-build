@@ -1,19 +1,17 @@
 #!/bin/bash
 set -eu
 
-if [ -z "${BASELINE_STORE:-}" ]; then
-  echo "BASELINE_STORE environment variable missing."
-  exit 1
-fi
+. ./config.sh
+BASELINE_STORE="$STORE/baseline/$LOCAL_BUILD_DIR"
+DEST_STORE="/webkit/$LOCAL_BUILD_DIR"
 
-if [ -z "${DEST_STORE:-}" ]; then
-  echo "DEST_STORE environment variable missing."
-  exit 1
-fi
+# Open file passed as parameter for reading in file descriptor 3
+packet_file="$1"
+exec 3< "$packet_file"
 
-read file_size
+read file_size <&3
 if [ "$file_size" == "end" ]; then
-  echo "This tool must not receive end packages!"
+  echo "This tool must not receive end packages!" >/dev/stderr
   exit 1
 elif [[ ! "$file_size" =~ [0-9]+ ]]; then
   echo "Received invalid size: $file_size" >/dev/stderr
@@ -21,8 +19,8 @@ elif [[ ! "$file_size" =~ [0-9]+ ]]; then
 fi
 echo "Received packet with size $file_size" >/dev/stderr
 
-read file
-read method
+read file <&3
+read method <&3
 
 echo "Receiving $file with method $method" >/dev/stderr
 echo "Creating folder $(dirname "$DEST_STORE/$file")" >/dev/stderr
@@ -30,15 +28,19 @@ mkdir -p "$(dirname "$DEST_STORE/$file")"
 
 case "$method" in
 "xz")
-  head -c "$file_size" | xz -d -c > "$DEST_STORE/$file"
+  head -c "$file_size" <&3 | xz -d -c > "$DEST_STORE/$file"
   echo "Received $DEST_STORE/$file"
   ;;
 "delta")
   xdelta -d -f -s "$BASELINE_STORE/$file" \
-    <(head -c "$file_size") \
+    <(head -c "$file_size" <&3) \
     "$DEST_STORE/$file"
   ;;
 *)
   echo "Invalid method: $method"
   exit 1
 esac
+
+# Close file and delete it
+exec 3>&-
+rm "$packet_file"

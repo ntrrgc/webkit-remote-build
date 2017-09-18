@@ -6,16 +6,6 @@
 #
 set -eu
 
-if [ -z "${BASELINE_STORE:-}" ]; then
-  echo "BASELINE_STORE environment variable missing." >/dev/stderr
-  exit 1
-fi
-
-if [ -z "${DEST_STORE:-}" ]; then
-  echo "DEST_STORE environment variable missing." >/dev/stderr
-  exit 1
-fi
-
 while read file_size; do
   if [ "$file_size" == "end" ]; then
     exit 0
