@@ -74,6 +74,7 @@ git checkout -- . >/dev/null
 # Put the source tree in the same state as the client
 git checkout "$($in_branch && echo $branch_name || echo $commit_hash)"
 patch -p1 < /tmp/local-changes.patch
+
 env \
   CC=${REMOTE_SCRIPTS_DIR@Q}/wrappers/cc \
   CXX=${REMOTE_SCRIPTS_DIR@Q}/wrappers/c++ \
