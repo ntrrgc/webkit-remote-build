@@ -4,7 +4,7 @@ import re
 from tqdm import tqdm
 
 if __name__ == "__main__":
-    bars = {}
+    bar = None
     re_progress = re.compile(r"^\[(\d+)/(\d+)\] ")
 
     try:
@@ -18,33 +18,30 @@ if __name__ == "__main__":
                     # Ignore short tasks
                     continue
 
-                # Ideally, build-webkit would provide a hint of what task
-                # this progress corresponds to, which I would use here.
-                # Unfortunately this is not the case. build-webkit launches
-                # several different tasks that write to the same file,
-                # unidentified.
-                # I use the "total" number as a name of sorts to differentiate
-                # different processes. It's not perfect, but better than
-                # nothing.
-                bar_name = total
+                if bar is not None and (done < bar.n or total != bar.total):
+                    # If the progress goes backwards or the total changes,
+                    # destroy the current bar and draw a new one.
+                    bar.leave = False
+                    bar.close()
+                    bar = None
 
                 # The bar is initialized only when the first progress line is
                 # found.
-                if bar_name not in bars:
-                    bars[bar_name] = tqdm(total=total, unit="objs", ncols=80)
+                if bar is None:
+                    bar = tqdm(total=total, unit="objs", ncols=80)
 
-                if done > bars[bar_name].n:
+                if done > bar.n:
                     # Advance the progress bar
-                    bars[bar_name].update(done - bars[bar_name].n)
+                    bar.update(done - bar.n)
 
                 if done == total:
                     # Finished with this bar
-                    bars[bar_name].close()
-                    del bars[bar_name]
+                    bar.close()
+                    bar = None
             else:
-                if len(bars) == 0:
+                if bar is None:
                     print(line, end="", flush=True)
                 else:
-                    next(iter(bars.values())).write(line, end="")
+                    bar.write(line, end="")
     except KeyboardInterrupt:
         pass
