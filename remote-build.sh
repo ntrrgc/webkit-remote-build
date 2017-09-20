@@ -78,7 +78,7 @@ patch -p1 < /tmp/local-changes.patch
 env \
   CC=${REMOTE_SCRIPTS_DIR@Q}/wrappers/cc \
   CXX=${REMOTE_SCRIPTS_DIR@Q}/wrappers/c++ \
-  LD=${REMOTE_SCRIPTS_DIR@Q}/wrappers/ld \
+  LD=${REMOTE_SCRIPTS_DIR@Q}/wrappers/ld.gold \
   ./Tools/Scripts/build-webkit ${BUILD_ARGS[@]@Q} \
   | tee /tmp/build-webkit.log \
   | ${REMOTE_SCRIPTS_DIR@Q}/print-ninja-progress.py
