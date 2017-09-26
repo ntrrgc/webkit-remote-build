@@ -10,7 +10,7 @@ echo "Started packet-splitter..." >>/tmp/packet-splitter.log
 
 while read file_size; do
   if [ "$file_size" == "end" ]; then
-    echo "Received end packet" >>/tmp/log
+    echo "Received end packet" >>/tmp/packet-splitter.log
     exit 0
   elif [[ ! "$file_size" =~ [0-9]+ ]]; then
     echo "Received invalid size: $file_size" >/dev/stderr
