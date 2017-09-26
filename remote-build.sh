@@ -62,8 +62,27 @@ elif [ "$1" == "build" ]; then
     "$DIR/packet-receiver.sh" &
   fi
 
-  ssh -T "$BUILD_HOST" <<END
+  function on_interruption() {
+    ssh "$BUILD_HOST" bash <<END
+# In the unlikely event that the script run inside ssh has not created the tear
+# down file yet, wait for it.
+while [ ! -f "/tmp/stop-webkit-build.sh" ]; do
+  sleep 0.5s
+done
+bash /tmp/stop-webkit-build.sh
+
+# In the unlikely event that the socket is not still listening, wait for it.
+while [ ! -S /tmp/delta-socket ]; do
+  sleep 0.5s
+done
+echo end | ncat -U /tmp/delta-socket
+END
+  }
+  trap on_interruption SIGINT SIGTERM
+
+  ssh -T "$BUILD_HOST" bash <<END
 set -eu
+echo "kill -TERM -\$\$ && rm /tmp/stop-webkit-build.sh" > /tmp/stop-webkit-build.sh
 cd /webkit
 
 # Fetch new commits if necessary
@@ -96,10 +115,14 @@ echo "Finished building webkit."
 echo end | ncat -U /tmp/delta-socket
 echo "Sent end package."
 
+rm /tmp/stop-webkit-build.sh
+
 if [ \$ret_webkit_build -ne 0 ]; then
   exit \$ret_webkit_build
 fi
 END
+
+  trap - SIGINT SIGTERM
 
   wait # wait for all packages to be extracted
 
