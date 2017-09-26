@@ -37,6 +37,10 @@ END
 
 elif [ "$1" == "build" ]; then
   cd /webkit
+
+  # It's necessary to be on the same branch in local and remote.
+  # If and only if we're on detached HEAD on local, we must be on detached HEAD on remote.
+
   commit_hash="$(git show --format="%h" --no-patch)"
   if git status --branch --porcelain=v2 | egrep -q '^# branch.head \(detached\)$'; then
     in_branch=false
@@ -73,6 +77,10 @@ git checkout -- . >/dev/null
 
 # Put the source tree in the same state as the client
 git checkout "$($in_branch && echo $branch_name || echo $commit_hash)"
+if $in_branch; then
+  # Fast-forward the local branch to get in sync with the remote
+  git merge 
+fi
 patch -p1 < /tmp/local-changes.patch
 
 env \
