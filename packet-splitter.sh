@@ -6,6 +6,8 @@
 #
 set -eu
 
+echo "Started packet-splitter..." >>/tmp/packet-splitter.log
+
 while read file_size; do
   if [ "$file_size" == "end" ]; then
     echo "Received end packet" >>/tmp/log
@@ -16,6 +18,7 @@ while read file_size; do
   fi
 
   read file
+  read -r file_timestamp
   read method
 
   packet_file="$(mktemp)"
@@ -26,4 +29,5 @@ while read file_size; do
   head -c "$file_size" >> "$packet_file"
 
   echo "$packet_file"
+  echo "Wrote packet containing $file" >>/tmp/packet-splitter.log
 done
