@@ -1,5 +1,6 @@
 STORE="$HOME/.webkit-remote"
 BUILD_HOST=homura.ntrrgc.me
+BUILD_MACHINE_HOSTNAME=homura  # note: only the first part is matched; the domain part, if any, is ignored
 BUILD_ARGS=(--gtk --debug --cmakeconfig="-DENABLE_GTKDOC=OFF")
 REMOTE_BUILD_DIR=WebKitBuild/webm/Debug
 LOCAL_BUILD_DIR=WebKitBuild/webm/Debug

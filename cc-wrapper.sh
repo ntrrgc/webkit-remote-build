@@ -1,9 +1,18 @@
 #!/bin/bash
 set -eu
 DIR="$(dirname $(realpath "$0"))"
+. "$DIR/config.sh"
+
 wrapped_executable="$(basename "$0")"
 
-echo "Wrapper invoked: $wrapped_executable $@" >>/tmp/cc-wrapper.log
+# Just execute the wrapped executable normally if this is not the build machine
+if [ "${HOSTNAME/.*}" != "$BUILD_MACHINE_HOSTNAME" ]; then
+  echo "Wrapper invoked in local machine: $wrapped_executable $@" >>/tmp/cc-wrapper.log
+  exec "$wrapped_executable" "$@"
+fi
+
+
+echo "Wrapper invoked in build machine: $wrapped_executable $@" >>/tmp/cc-wrapper.log
 
 found_o=0
 
