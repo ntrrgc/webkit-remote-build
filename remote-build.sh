@@ -4,6 +4,9 @@ set -eu
 DIR="$(dirname $(realpath "$0"))"
 . "$DIR/config.sh"
 
+# Sync webkit-remote-build in build machine
+rsync --delete -a "$DIR/" "$BUILD_HOST:$REMOTE_SCRIPTS_DIR/"
+
 if [ "$1" == "sync" ]; then
   # Generate a base snapshot of the chubby files in the build host and download
   # it to the local machine. It will be very slow on slow networks (over ~2 GB
