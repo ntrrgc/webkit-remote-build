@@ -27,6 +27,7 @@ if [ "$method" == "delta" ]; then
   # Print the package to stdout
   echo $file_size
   echo "$file"
+  stat --format="%y" "$file"
   echo "delta"
   cat "$delta_file"
 
@@ -42,6 +43,7 @@ else
   # Print the package to stdout
   echo $file_size
   echo "$file"
+  stat --format="%y" "$file"
   echo "xz"
   cat "$compressed_file"
 

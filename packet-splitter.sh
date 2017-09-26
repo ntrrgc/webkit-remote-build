@@ -21,6 +21,7 @@ while read file_size; do
   packet_file="$(mktemp)"
   echo "$file_size" >> "$packet_file"
   echo "$file" >> "$packet_file"
+  echo "$file_timestamp" >> "$packet_file"
   echo "$method" >> "$packet_file"
   head -c "$file_size" >> "$packet_file"
 

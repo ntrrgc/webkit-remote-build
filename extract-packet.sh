@@ -21,6 +21,7 @@ elif [[ ! "$file_size" =~ [0-9]+ ]]; then
 fi
 
 read file <&3
+read -r file_timestamp <&3
 read method <&3
 
 echo "Receiving $file with method $method ($file_size bytes)" >>/tmp/extract-packet.log
@@ -39,6 +40,8 @@ case "$method" in
   echo "Invalid method: $method"
   exit 1
 esac
+
+touch --no-create --time=modify --date="$file_timestamp" "$DEST_STORE/$file"
 
 # Close file and delete it
 exec 3>&-
