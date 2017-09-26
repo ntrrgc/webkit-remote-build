@@ -84,7 +84,9 @@ env \
   | ${REMOTE_SCRIPTS_DIR@Q}/print-ninja-progress.py
 ret_webkit_build="\${PIPESTATUS[0]}"
 
+echo "Finished building webkit."
 echo end | ncat -U /tmp/delta-socket
+echo "Sent end package."
 
 if [ \$ret_webkit_build -ne 0 ]; then
   exit \$ret_webkit_build
