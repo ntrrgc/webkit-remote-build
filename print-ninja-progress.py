@@ -28,7 +28,7 @@ if __name__ == "__main__":
                 # The bar is initialized only when the first progress line is
                 # found.
                 if bar is None:
-                    bar = tqdm(total=total, unit="objs", ncols=80)
+                    bar = tqdm(total=total, unit="objs", ncols=80, smoothing=0)
 
                 if done > bar.n:
                     # Advance the progress bar
