@@ -57,7 +57,7 @@ elif [ "$1" == "build" ]; then
       exit 1
     fi
   fi
-  git diff --cached > /tmp/local-changes.patch
+  git diff HEAD > /tmp/local-changes.patch
 
   rsync /tmp/local-changes.patch "$BUILD_HOST":/tmp/
 
