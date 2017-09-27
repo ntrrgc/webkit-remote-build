@@ -49,6 +49,7 @@ elif [ "$1" == "build" ]; then
     in_branch=false
   else
     in_branch=true
+    tracking_remote="$(git status --branch --porcelain=v2 | egrep '^# branch.upstream '| cut -d" " -f3)"
     branch_name="$(git status --branch --porcelain=v2 | egrep '^# branch.head '| cut -d" " -f3)"
     if ! git status --branch --porcelain=v2 | egrep -q '^# branch.ab \+0 -0$'; then
       echo "Branch not synchronized with remote. You need to push or pull commits." >/dev/stderr
@@ -100,8 +101,8 @@ git checkout -- . >/dev/null
 # Put the source tree in the same state as the client
 git checkout "$($in_branch && echo $branch_name || echo $commit_hash)"
 if $in_branch; then
-  # Fast-forward the local branch to get in sync with the remote
-  git merge 
+  # Reset the local branch to be in sync with the remote
+  git reset --hard ${tracking_remote@Q}
 fi
 patch -p1 < /tmp/local-changes.patch
 
