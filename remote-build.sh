@@ -11,7 +11,7 @@ if [ "$1" == "sync" ]; then
   # Generate a base snapshot of the chubby files in the build host and download
   # it to the local machine. It will be very slow on slow networks (over ~2 GB
   # download).
-  ssh -T "$BUILD_HOST" <<END
+  ssh -T "$BUILD_HOST" "${REMOTE_BASH[@]}" <<END
 set -eu
 mkdir -p "$STORE/baseline/$REMOTE_BUILD_DIR"
 rsync --delete --info=progress2 -a \
@@ -27,7 +27,7 @@ elif [ "$1" == "check" ]; then
   # Test that the baseline chubby files match. Otherwise the delta files will
   # not be applied correctly.
   (cd "/webkit-remote-baseline/$LOCAL_BUILD_DIR" && md5sum "${CHUBBY_FILES[@]}" > /tmp/baseline-local.txt)
-  ssh -T "$BUILD_HOST" <<END > /tmp/baseline-remote.txt
+  ssh -T "$BUILD_HOST" "${REMOTE_BASH[@]}" <<END > /tmp/baseline-remote.txt
 cd "/webkit-remote-baseline/${REMOTE_BUILD_DIR@Q}" && md5sum ${CHUBBY_FILES[@]@Q}
 END
   diff -u /tmp/baseline-{local,remote}.txt
@@ -67,7 +67,7 @@ elif [ "$1" == "build" ]; then
   fi
 
   function on_interruption() {
-    ssh "$BUILD_HOST" bash <<END
+    ssh "$BUILD_HOST" "${REMOTE_BASH[@]}" <<END
 # In the unlikely event that the script run inside ssh has not created the tear
 # down file yet, wait for it.
 while [ ! -f "/tmp/stop-webkit-build.sh" ]; do
@@ -84,7 +84,7 @@ END
   }
   trap on_interruption SIGINT SIGTERM
 
-  ssh -T "$BUILD_HOST" bash <<END
+  ssh -T "$BUILD_HOST" "${REMOTE_BASH[@]}" <<END
 set -eu
 echo "kill -TERM -\$\$ && rm /tmp/stop-webkit-build.sh" > /tmp/stop-webkit-build.sh
 cd /webkit
