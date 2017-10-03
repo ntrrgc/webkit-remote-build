@@ -37,7 +37,7 @@ else
   # xz method (entire file)
   echo "Warning: File not found, using xz method: $file" >>/tmp/generate-packet.log
   compressed_file="$(mktemp)"
-  xz -z "$XZ_COMPRESS_FLAGS[@]" -k "$file" -c > "$compressed_file"
+  xz -z "${XZ_COMPRESS_FLAGS[@]}" -k "$file" -c > "$compressed_file"
   file_size=$(stat --printf="%s" "$compressed_file")
 
   # Print the package to stdout
