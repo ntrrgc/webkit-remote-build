@@ -1,9 +1,8 @@
 STORE="$HOME/.webkit-remote"
 BUILD_HOST=homura.ntrrgc.me
 BUILD_MACHINE_HOSTNAME=homura  # note: only the first part is matched; the domain part, if any, is ignored
-BUILD_ARGS=(--gtk --debug --cmakeconfig="-DENABLE_GTKDOC=OFF")
-REMOTE_BUILD_DIR=WebKitBuild/webm/Debug
-LOCAL_BUILD_DIR=WebKitBuild/webm/Debug
+# --debug is added here if DEBUG=1 is specified as an environment variable
+BUILD_ARGS=(--gtk --cmakeconfig="-DENABLE_GTKDOC=OFF")
 REMOTE_SCRIPTS_DIR=/home/ntrrgc/Apps/webkit-remote-build
 REMOTE_BASH=(bash --login)  # Command used with ssh to get a shell. You can change it e.g. to use a chroot.
 XZ_COMPRESS_FLAGS=(-5)

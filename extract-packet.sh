@@ -3,6 +3,7 @@ set -eu
 
 DIR="$(dirname $(realpath "$0"))"
 . "$DIR/config.sh"
+. "$DIR/find-build-dirs.sh"
 
 BASELINE_STORE="$STORE/baseline/$LOCAL_BUILD_DIR"
 DEST_STORE="/webkit/$LOCAL_BUILD_DIR"

@@ -3,6 +3,7 @@ set -eu
 
 DIR="$(dirname $(realpath "$0"))"
 . "$DIR/config.sh"
+. "$DIR/find-build-dirs.sh"
 BASELINE_STORE="$STORE/baseline/$REMOTE_BUILD_DIR"
 
 if [ -z "${1:-}" ]; then
