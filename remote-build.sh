@@ -6,7 +6,7 @@ DIR="$(dirname $(realpath "$0"))"
 . "$DIR/find-build-dirs.sh"
 
 # Sync webkit-remote-build in build machine
-rsync --delete -a "$DIR/" "$BUILD_HOST:$REMOTE_SCRIPTS_DIR/"
+rsync "${RSYNC_EXTRA_ARGS[@]}" --delete -a "$DIR/" "$BUILD_HOST:$REMOTE_SCRIPTS_DIR/"
 
 if [ "$1" == "sync" ]; then
   # Generate a base snapshot of the chubby files in the build host and download
@@ -15,12 +15,12 @@ if [ "$1" == "sync" ]; then
   ssh -T "$BUILD_HOST" "${REMOTE_BASH[@]}" <<END
 set -eu
 mkdir -p "$STORE/baseline/$REMOTE_BUILD_DIR"
-rsync --delete --info=progress2 -a \
+rsync "${RSYNC_EXTRA_ARGS[@]}" --delete --info=progress2 -a \
   "/webkit/$REMOTE_BUILD_DIR/" \
   "$STORE/baseline/$REMOTE_BUILD_DIR/"
 END
   mkdir -p "$STORE/baseline/$LOCAL_BUILD_DIR/"
-  rsync --delete --info=progress2 -a \
+  rsync "${RSYNC_EXTRA_ARGS[@]}" --delete --info=progress2 -a \
     "$BUILD_HOST:$STORE/baseline/$REMOTE_BUILD_DIR/" \
     "$STORE/baseline/$LOCAL_BUILD_DIR/"
 
@@ -60,7 +60,7 @@ elif [ "$1" == "build" ]; then
   fi
   git diff HEAD > /tmp/local-changes.patch
 
-  rsync /tmp/local-changes.patch "$BUILD_HOST":/tmp/
+  rsync "${RSYNC_EXTRA_ARGS[@]}" /tmp/local-changes.patch "$BUILD_HOST":/tmp/
 
   # Start receiver
   if ! $DO_NOT_LAUNCH_PACKET_RECEIVER_IN_REMOTE_BUILD; then
@@ -134,7 +134,7 @@ END
   time_start_transfer=$SECONDS
   echo "Transferring whole files..."
   mkdir -p "/webkit/$LOCAL_BUILD_DIR/"
-  rsync --delete --info=progress2 -aXz \
+  rsync "${RSYNC_EXTRA_ARGS[@]}" --delete --info=progress2 -aXz \
     "$BUILD_HOST:/webkit/$REMOTE_BUILD_DIR/" "/webkit/$LOCAL_BUILD_DIR/"
 
 else
