@@ -14,7 +14,7 @@ fi
 
 function find_branch_dir() {
   pushd /webkit >/dev/null
-  if [[ "$(git config core.webKitBranchBuild || true)" != "true" ]] 
+  if [[ "$(git config core.webKitBranchBuild || true)" != "true" ]] \
     || git status --branch --porcelain=v2 | egrep -q '^# branch.head \(detached\)$'; then
     # Branch builds are not enabled or we are not in a branch
     local in_branch=false
