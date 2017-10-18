@@ -27,7 +27,7 @@ LOCAL_BUILD_DIR=/webkit/WebKitBuild/Debug
 # manually you can use this script which will use `build-type` to populate
 # them. It will also add --debug to BUILD_ARGS if in a debug build.
 #
-# . ./webkit-find-dirs.sh
+# . "$(dirname "$0")/webkit-find-dirs.sh"
 
 # xz compress flags. You can set the compression level here. Higher values
 # compress better but more slowly. For best performance, you should use the
