@@ -3,7 +3,6 @@ set -eu
 
 DIR="$(dirname $(realpath "$0"))"
 . "$DIR/config.sh"
-. "$DIR/find-build-dirs.sh"
 
 # Sync webkit-remote-build in build machine
 rsync "${RSYNC_EXTRA_ARGS[@]}" --delete -a "$DIR/" "$BUILD_HOST:$REMOTE_SCRIPTS_DIR/"
