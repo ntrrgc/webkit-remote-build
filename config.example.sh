@@ -5,7 +5,8 @@ STORE="$HOME/.webkit-remote"
 # Host to connect to using ssh.
 BUILD_HOST=my-dynamic-dns.example.com
 
-# Name of the build machine. Used to know if we are running code there or not.
+# Name of the build machine. Used to know if we are running code there or not
+# when cc-wrapper.sh is executed.
 # Note: only the first part is matched, so "foo" matches both "foo" and 
 # "foo.bar".
 BUILD_MACHINE_HOSTNAME=example
