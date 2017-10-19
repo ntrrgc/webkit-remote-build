@@ -17,6 +17,12 @@ REMOTE_SCRIPTS_DIR=/home/ntrrgc/Apps/webkit-remote-build
 # Arguments passed to build-webkit
 BUILD_ARGS=(--gtk --debug --cmakeconfig="-DENABLE_GTKDOC=OFF")
 
+# Path to the git repo that will be synchronized (source, local machine)
+LOCAL_GIT_ROOT=/webkit
+
+# Path to the git repo that will be synchronized (destination, build machine)
+REMOTE_GIT_ROOT=/webkit
+
 # Path to build directory in the build machine
 REMOTE_BUILD_DIR=/webkit/WebKitBuild/Debug
 

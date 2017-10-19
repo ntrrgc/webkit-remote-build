@@ -13,7 +13,7 @@ else
 fi
 
 function find_branch_dir() {
-  pushd /webkit >/dev/null
+  pushd "$LOCAL_GIT_ROOT" >/dev/null
   if [[ "$(git config core.webKitBranchBuild || true)" != "true" ]] \
     || git status --branch --porcelain=v2 | egrep -q '^# branch.head \(detached\)$'; then
     # Branch builds are not enabled or we are not in a branch
@@ -24,9 +24,9 @@ function find_branch_dir() {
   fi
 
   if ! $in_branch || [ "$branch_name" == "master" ]; then
-    echo "WebKitBuild"
+    echo "$LOCAL_GIT_ROOT/WebKitBuild"
   else
-    echo "WebKitBuild/$branch_name"
+    echo "$LOCAL_GIT_ROOT/WebKitBuild/$branch_name"
   fi
   popd >/dev/null
 }

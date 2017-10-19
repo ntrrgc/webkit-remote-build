@@ -15,7 +15,7 @@ if [ "$1" == "sync" ]; then
 set -eu
 mkdir -p "$STORE/baseline/$REMOTE_BUILD_DIR"
 rsync "${RSYNC_EXTRA_ARGS[@]}" --delete --info=progress2 -a \
-  "/webkit/$REMOTE_BUILD_DIR/" \
+  "$REMOTE_BUILD_DIR/" \
   "$STORE/baseline/$REMOTE_BUILD_DIR/"
 END
   mkdir -p "$STORE/baseline/$LOCAL_BUILD_DIR/"
@@ -39,7 +39,7 @@ END
   fi
 
 elif [ "$1" == "build" ]; then
-  cd /webkit
+  cd "$LOCAL_GIT_ROOT"
 
   # It's necessary to be on the same branch in local and remote.
   # If and only if we're on detached HEAD on local, we must be on detached HEAD on remote.
@@ -87,7 +87,7 @@ END
   ssh -T "$BUILD_HOST" "${REMOTE_BASH[@]}" <<END
 set -eu
 echo "kill -TERM -\$\$ && rm /tmp/stop-webkit-build.sh" > /tmp/stop-webkit-build.sh
-cd /webkit
+cd ${REMOTE_GIT_ROOT@Q}
 
 # Fetch new commits if necessary
 if ! git show ${commit_hash@Q} >/dev/null 2>/dev/null; then
@@ -132,9 +132,9 @@ END
 
   time_start_transfer=$SECONDS
   echo "Transferring whole files..."
-  mkdir -p "/webkit/$LOCAL_BUILD_DIR/"
+  mkdir -p "$LOCAL_BUILD_DIR/"
   rsync "${RSYNC_EXTRA_ARGS[@]}" --delete --info=progress2 -aXz \
-    "$BUILD_HOST:/webkit/$REMOTE_BUILD_DIR/" "/webkit/$LOCAL_BUILD_DIR/"
+    "$BUILD_HOST:$REMOTE_BUILD_DIR/" "$LOCAL_BUILD_DIR/"
 
 else
   echo "Unknown command"
