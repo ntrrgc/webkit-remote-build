@@ -1,4 +1,4 @@
-webkit-remote-build is a series of scripts that enable remote compilation in WebKit.
+webkit-remote-build is a suite of scripts that enable remote compilation in WebKit.
 
 Its main advantages over other remote compilation tools are:
 
