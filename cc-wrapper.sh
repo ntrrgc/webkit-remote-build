@@ -6,12 +6,12 @@ DIR="$(dirname $(realpath "$0"))"
 wrapped_executable="$(basename "$0")"
 
 # Just execute the wrapped executable normally if this is not the build machine
-if [ "${HOSTNAME/.*}" != "$BUILD_MACHINE_HOSTNAME" ]; then
+if [ "${INVOKED_BY_WEBKIT_REMOTE_BUILD:-}" != "1" ]; then
   echo "Wrapper invoked in local machine: $wrapped_executable $@" >>/tmp/cc-wrapper.log
   exec "$wrapped_executable" "$@"
 fi
 
-
+unset INVOKED_BY_WEBKIT_REMOTE_BUILD
 echo "Wrapper invoked in build machine: $wrapped_executable $@" >>/tmp/cc-wrapper.log
 
 found_o=0

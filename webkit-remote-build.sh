@@ -110,6 +110,7 @@ env \
   CC=${REMOTE_SCRIPTS_DIR@Q}/wrappers/cc \
   CXX=${REMOTE_SCRIPTS_DIR@Q}/wrappers/c++ \
   LD=${REMOTE_SCRIPTS_DIR@Q}/wrappers/c++ \
+  INVOKED_BY_WEBKIT_REMOTE_BUILD=1 \
   ./Tools/Scripts/build-webkit ${BUILD_ARGS[@]@Q} \
   | tee /tmp/build-webkit.log \
   | ${REMOTE_SCRIPTS_DIR@Q}/print-ninja-progress.py
