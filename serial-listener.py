@@ -64,7 +64,7 @@ if __name__ == '__main__':
                             break
                         sys.stdout.write(block)
                 else:
-                    raise AssertionError(f"Unhandled event: fd={fd} "
+                    raise AssertionError("Unhandled event: fd={fd} "
                                          "event_type={event_type}",
                                          file=sys.stderr)
     except KeyboardInterrupt:
